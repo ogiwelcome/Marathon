@@ -1,3 +1,6 @@
+# TODO: 
+# mergeした回数順で置いていく
+# 先にloopを作っておいて埋めておく
 import sys
 input=sys.stdin.readline
 import random
