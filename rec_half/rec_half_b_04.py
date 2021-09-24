@@ -1,5 +1,6 @@
 import random
 import time
+import math
 DEBUG=True
 def generate():
     if DEBUG:
@@ -47,29 +48,33 @@ def solve(N,E):
                 break
         if flg:
             use.append([l,y,x])
-    loop=0
+    loop=1
     best_sc=-1
     best_use=use[:]
+    MAX_LOOP=2*10**5
     while True:
         loop+=1
-        if loop%200==0:
-            if time.time()-time0>=1.8:
+        if loop%500==0:
+            if time.time()-time0>=1.75:
                 break
-        if loop%300==0 and len(use)>=2: # 壊す
+        if loop%400==0 and len(use)>=2: # 壊す
             P=[[0]*N for i in range(N)]
             for l,y,x in use:
                 P[y][x]=l
             sc=calc_score(E,P)
-            if sc>best_sc:
+            def temperature(x):
+                a=50
+                return a**x
+            prob=math.exp((sc-best_sc)/temperature(loop/MAX_LOOP)) if sc<=best_sc else 1
+            if prob>=random.random(): # 多少改悪でも許す
                 best_sc=sc
                 best_use=use[:]
             else:
                 use=best_use[:]
             idx=random.randint(0,len(use)-1)
             l,y,x=use[idx]
-            dx=random.randint(1,max(l//5,1))
             use=use[:idx]+use[idx+1:]
-        if loop%30:
+        if loop%40:
             idx=random.randint(0,len(use)-1)
             l,y,x=use[idx]
             dx=random.randint(1,3)
@@ -102,6 +107,7 @@ def solve(N,E):
             if flg:
                 use.append([l,y,x])
     P=[[0]*N for i in range(N)]
+    #print(loop)
     for l,y,x in best_use:
         P[y][x]=l
     return P
@@ -121,11 +127,11 @@ if DEBUG:
     f2.close()
     """
     sc=0
-    for rep in range(100):
+    for rep in range(50):
         N,E=generate()
         P=solve(N,E)
         sc+=calc_score(E,P)
-    sc/=100
+    sc/=50
     print("average score:",sc)
 else:
     for pp in P:
