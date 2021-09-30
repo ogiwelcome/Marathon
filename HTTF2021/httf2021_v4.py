@@ -48,10 +48,12 @@ def calc_score(path,p):
                     return -1
         elif dd=="O":
             if not have:
+                print("No have")
                 return -1
             for j in range(len(p)):
                 x,y,idx=p[j]
                 if x==nx and y==ny and idx!=-1:
+                    print("Already exist")
                     return -1
                 elif x==nx and y==ny:
                     p[j][2]=have.pop()
@@ -61,6 +63,7 @@ def calc_score(path,p):
     if len(have)==100:
         return 4000-cnt
     else:
+        print("too small, size:",len(have))
         return -1
 def calc_path(px,py,x,y):
     res=[]
@@ -80,23 +83,40 @@ def calc_path(px,py,x,y):
             res.append("L")
     return "".join(res)
 def solve(N,p):
-    p=[[0,0,-2]]+sorted(p,reverse=True)
+    not_use=[]
+    use=[]
+    for x,y,idx in p:
+        if 0<=x<=9 and 0<=y<=9:
+            not_use.append([x,y,idx])
+        else:
+            use.append([x,y,idx])
+    p=[[0,0,-2]]+use[:]
     pos=[[] for i in range(100)]
+    vis={}
+    for x,y,idx in not_use:
+        pos[idx]=[x,y]
+        vis[(x,y)]=idx
     iter=1
     for i in range(10):
         if i%2:
             for j in range(10)[::-1]:
-                pos[p[iter][2]]=[i,j]
-                iter+=1
+                if (i,j) in vis:
+                    continue
+                if iter<len(p):
+                    pos[p[iter][2]]=[i,j]
+                    iter+=1
         else:
             for j in range(10):
-                pos[p[iter][2]]=[i,j]
-                iter+=1
+                if (i,j) in vis:
+                    continue
+                if iter<len(p):
+                    pos[p[iter][2]]=[i,j]
+                    iter+=1
     l=len(p)
     best_order=[p[i][:] for i in range(l)]
     while time.time()-time0<2.7:
-        i=random.randint(1,99)
-        j=random.randint(1,99)
+        i=random.randint(1,l-2)
+        j=random.randint(1,l-2)
         if i==j:continue
         if i>j:
             i,j=j,i
@@ -152,22 +172,31 @@ def solve(N,p):
     l-=1
     best_order=best_order[1:]
     idx_order=[best_order[i][2] for i in range(l)][::-1] # 上から入れるから
+    #print("expected:",100-len(vis),"calc:",len(idx_order))
     # 10×10に展開
-    reorder=[[] for i in range(l)]
+    reorder=[[] for i in range(100)]
     iter=0
     for i in range(10):
         if i%2:
             for j in range(10)[::-1]:
-                ans.append("O")
-                reorder[idx_order[iter]]=[i,j]
-                iter+=1
+                if (i,j) in vis:
+                    num=vis[(i,j)]
+                    reorder[num]=[i,j]
+                else:
+                    ans.append("O")
+                    reorder[idx_order[iter]]=[i,j]
+                    iter+=1
                 if j!=0:
                     ans.append("L")
         else:
             for j in range(10):
-                ans.append("O")
-                reorder[idx_order[iter]]=[i,j]
-                iter+=1
+                if (i,j) in vis:
+                    num=vis[(i,j)]
+                    reorder[num]=[i,j]
+                else:
+                    ans.append("O")
+                    reorder[idx_order[iter]]=[i,j]
+                    iter+=1
                 if j!=9:
                     ans.append("R")
         if i!=9:
@@ -175,7 +204,7 @@ def solve(N,p):
     # 展開したやつを順番に拾う
     ans.append(calc_path(i,j,reorder[0][0],reorder[0][1]))
     ans.append("I")
-    for i in range(l-1):
+    for i in range(100-1):
         ans.append(calc_path(reorder[i][0],reorder[i][1],reorder[i+1][0],reorder[i+1][1]))
         ans.append("I")
     return "".join(ans)
