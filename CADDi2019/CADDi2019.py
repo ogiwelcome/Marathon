@@ -32,6 +32,8 @@ def dist(x1,y1,z1,x2,y2,z2):
     return ( (x1-x2)**2+(y1-y2)**2+(z1-z2)**2 )**0.5
 def solve(L,N,M,ball,pair):
     pair_dict={}
+    pair.sort(key=lambda x:x[3])
+    # 重複の処理を分けたくない+小さいので最後に更新するとバグる(ビームサーチ部分)
     for a,b,c,d in pair:
         pair_dict[(a-1,b-1)]=(c,d) # 重複あり得るかも
     ball_init=[ball[i][:] for i in range(N)]
@@ -46,7 +48,7 @@ def solve(L,N,M,ball,pair):
         nxt=[]
         for sc,xyzi in cur:
             nxt.append([sc,xyzi])
-            for rep in range(10):
+            for rep in range(10): # ここのパラメータはいじれそう
                 nx,ny,nz=[random.randint(r,L-r) for _ in range(3)]
                 delta_sc=0 # pairによる加算分
                 flg=True
