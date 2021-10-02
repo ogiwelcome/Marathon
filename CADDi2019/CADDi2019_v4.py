@@ -39,8 +39,8 @@ def solve(L,N,M,ball,pair):
     ball_init=[ball[i][:] for i in range(N)]
     ball=[ball[i]+[i] for i in range(N)]
     ball.sort(key=lambda x:x[1],reverse=True)
-    BEAM=13
-    eps=10**(-5) #　誤差用
+    BEAM=5
+    eps=10**(-6) #　誤差用
     cur=[]
     cur.append([0,[]])
     for i in range(N):
@@ -48,7 +48,7 @@ def solve(L,N,M,ball,pair):
         nxt=[]
         for sc,xyzi in cur:
             nxt.append([sc,xyzi])
-            for rep in range(200): # ここのパラメータはいじれそう->そもそももっといい取り方ありそう
+            for rep in range(100): # ここのパラメータはいじれそう->そもそももっといい取り方ありそう
                 nx,ny,nz=[random.randint(r,L-r) for _ in range(3)]
                 delta_sc=0 # pairによる加算分
                 flg=True
@@ -69,7 +69,7 @@ def solve(L,N,M,ball,pair):
                     sc2=sc+p+delta_sc
                     # random入れることで若干悪い遷移も取れるようになる
                     nxt.append([sc2,xyzi+[[nx,ny,nz,idx1]]])
-                    break
+                    #break
         nxt.sort(reverse=True)
         cur=nxt[:BEAM]
     best_sc,best_xyzi=cur[0]
