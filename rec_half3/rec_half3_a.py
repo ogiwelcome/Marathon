@@ -46,7 +46,7 @@ def solve(N,p):
     while time.time()-time0<1.7:
         idx1=random.randint(1,N-1)
         idx2=random.randint(1,N-1)
-        if idx1==idx2:
+        if abs(idx1-idx2)<=1:
             continue
         delta=0
         x1,y1,i1=best_p[idx1-1]
