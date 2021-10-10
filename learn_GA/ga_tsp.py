@@ -39,8 +39,13 @@ def generate_roulette(fitness): # fitness: vec
     for i in range(len(fitness)):
         roulette[i]=fitness[i]/tot
     return roulette
+"""
 N,cities=generate()
 genes=generate_init_genes(3,N)
 path_l=genes_path_l(genes,cities)
 inv_path_l=[1/path_l[i] for i in range(len(path_l))]
 print(path_l)
+"""
+def roulette_choice(fitness):
+    roulette=generate_roulette(fitness)
+    choiced=
