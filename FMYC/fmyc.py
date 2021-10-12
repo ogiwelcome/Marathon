@@ -20,15 +20,15 @@ def calc_score(A):
     return sc
 # ビームサーチが雑に実装できて強そう
 def solve(N,K,A):
-    BEAM=5
-    width=10 # 一度に変更する区間幅
+    BEAM=4
+    width=5 # 一度に変更する区間幅
     cur=[]
     cur.append([calc_score(A),A[:],[]]) # sc,changed_A,actions
     for rep in range(K):
         #print(rep,len(cur))
         nxt=[]
         for n_sc,n_A,n_ac in cur:
-            for rep2 in range(10):
+            for rep2 in range(6):
                 l1=random.randint(0,N-width-1)
                 r1=l1+width
                 l2=random.randint(0,N-width-1)
