@@ -45,8 +45,8 @@ def dfs_coloring(sy,sx,grid,col):
     return grid
 def solve(N,K,s):
     best_actions=[-1]*10000
-    for ty in range(49,52):
-        for tx in range(49,52):
+    for ty in range(45,55):
+        for tx in range(45,55):
             actions=[]
             ss=[[s[i][j] for j in range(N)] for i in range(N)]
             for rep in range(500):
